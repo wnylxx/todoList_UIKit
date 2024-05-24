@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AddTodoViewControllerDelegate: NSObject {
-    func reloadTodoEntry(_ todoEntries: [TodoEntry])
+    func saveTodoEntry(_ todoEntry: TodoEntry)
 }
 
 
@@ -135,7 +135,7 @@ class AddTodoViewController: UIViewController, UITextViewDelegate {
         }
         let todoEntry = TodoEntry(date: datePicker.date ,title: title, body: body, isCompleted: false)
         todoEntries.append(todoEntry)
-        self.delegate?.reloadTodoEntry(todoEntries)
+        self.delegate?.saveTodoEntry(todoEntry)
         dismiss(animated: true)
     }
     

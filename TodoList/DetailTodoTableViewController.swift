@@ -8,11 +8,21 @@
 import UIKit
 
 class DetailTodoTableViewController: UITableViewController {
+    
+    let todoEntry: TodoEntry
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.title = "Detail"
+    }
+    
+    init(todoEntry: TodoEntry) {
+        self.todoEntry  = todoEntry
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Table view data source

@@ -46,6 +46,7 @@ class SharedData {
         do {
             let data = try Data(contentsOf: fileURL)
             let todoEntriesData = try JSONDecoder().decode([TodoEntry].self, from: data)
+            todoEntries = todoEntriesData
         } catch {
             print("Failed to read Json data: \(error.localizedDescription)")
         }

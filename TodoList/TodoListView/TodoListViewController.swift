@@ -9,6 +9,7 @@ import UIKit
 
 class TodoListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, AddTodoViewControllerDelegate {
     
+    
     var todoEntries: [TodoEntry] = []
     
     lazy var tableView: UITableView = {
@@ -25,7 +26,6 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.delegate = self
         tableView.register(TodoListTableViewCell.self, forCellReuseIdentifier: "todoCell")
         
-        createSampleTodoEntryData()
         
         self.title = "TodoList"
         let appearance = UINavigationBarAppearance()
@@ -52,9 +52,9 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailTodoTableViewController = DetailTodoTableViewController()
-        show(detailTodoTableViewController, sender: self)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        SharedData.shared.loadTodoEntries()
     }
     
     
@@ -67,30 +67,35 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        todoEntries.count
+        SharedData.shared.numberOfTodoEntries()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoListTableViewCell
-        let todoEntry = todoEntries[indexPath.row]
+        let todoEntry = SharedData.shared.getTodoEntry(index: indexPath.row)
         cell.configureCell(todoEntry: todoEntry)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let todoEntry = SharedData.shared.getTodoEntry(index: indexPath.row)
+        let detailTodoTableViewController = DetailTodoTableViewController(todoEntry: todoEntry)
+        show(detailTodoTableViewController, sender: self)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         90
     }
     
-    func reloadTodoEntry(_ todoEntries: [TodoEntry]) {
-        self.todoEntries = todoEntries
+    func saveTodoEntry(_ todoEntry: TodoEntry) {
+        SharedData.shared.addTodoEntry(newTodoEntry: todoEntry)
+        SharedData.shared.saveTodoEntries()
         tableView.reloadData()
     }
     
-    func createSampleTodoEntryData() {
-        todoEntries = [TodoEntry(date: Date(), title: "wash Dishes", body: "I have to wash dishes", isCompleted: false),
-                       TodoEntry(date: Date(), title: "take a shower", body: "I have to take a shower", isCompleted: false),
-                       TodoEntry(date: Date(), title: "do the homework", body: "I have to do the homework", isCompleted: false)]
-        tableView.reloadData()
-    }
+//    func reloadTodoEntry(_ todoEntries: [TodoEntry]) {
+//        self.todoEntries = todoEntries
+//        tableView.reloadData()
+//    }
 }
 
