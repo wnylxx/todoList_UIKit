@@ -12,7 +12,7 @@ protocol AddTodoViewControllerDelegate: NSObject {
 }
 
 
-class AddTodoViewController: UIViewController {
+class AddTodoViewController: UIViewController, UITextViewDelegate {
     weak var delegate: AddTodoViewControllerDelegate?
     var todoEntries: [TodoEntry]
     
@@ -38,12 +38,14 @@ class AddTodoViewController: UIViewController {
         let textField = UITextField()
         textField.placeholder = "Title"
         textField.borderStyle = .roundedRect
+        textField.addTarget(self, action: #selector(textChanged(textField: )), for: .editingChanged)
         return textField
     }()
     
     private lazy var bodyTextView: UITextView = {
         let textView = UITextView()
         textView.text = "Journal Body"
+        textView.delegate = self
         return textView
     }()
     
@@ -94,6 +96,7 @@ class AddTodoViewController: UIViewController {
                                           target: self,
                                           action: #selector(save))
         navigationItem.rightBarButtonItem = rightButton
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         let leftButton = UIBarButtonItem(barButtonSystemItem: .cancel,
                                          target: self,
@@ -105,6 +108,24 @@ class AddTodoViewController: UIViewController {
         super.viewDidAppear(animated)
         view.addGestureRecognizer(tapGesture)
     }
+    
+    func updateSaveButtonState() {
+        guard let title = titleTextField.text, !title.isEmpty,
+              let body = bodyTextView.text, !body.isEmpty else {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            return
+        }
+        navigationItem.rightBarButtonItem?.isEnabled = true
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        updateSaveButtonState()
+    }
+    
+    @objc func textChanged(textField: UITextField){
+        updateSaveButtonState()
+    }
+    
     
     
     @objc func save() {
@@ -125,4 +146,7 @@ class AddTodoViewController: UIViewController {
     @objc func tapHandler(_ sender: UIView) {
         view.endEditing(true)
     }
+    
+    
+    
 }
