@@ -68,8 +68,10 @@ class TodoListTableViewCell: UITableViewCell {
     }
     
     func configureCell(todoEntry: TodoEntry) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yy.MM.dd HH시 mm분 까지"
         titleLabel.text = todoEntry.entryTitle
-        dateLabel.text = todoEntry.date.formatted(.dateTime.year().month().day())
+        dateLabel.text = dateFormatter.string(from: todoEntry.date)
     }
     
     
