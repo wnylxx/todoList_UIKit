@@ -13,6 +13,7 @@ class TodoListTableViewCell: UITableViewCell {
         let checkButton = UIButton(type: .custom)
         checkButton.setImage(UIImage(systemName: "circlebadge"), for: .normal)
         checkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .selected)
+        
         checkButton.addAction(UIAction {[weak self] _ in
             self?.checkButton.isSelected.toggle()
         }, for: .touchUpInside)
@@ -30,27 +31,28 @@ class TodoListTableViewCell: UITableViewCell {
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return titleLabel
     }()
+
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        addSubview(checkButton)
-        addSubview(dateLabel)
-        addSubview(titleLabel)
         
         checkButton.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        contentView.addSubview(checkButton)
+        contentView.addSubview(dateLabel)
+        contentView.addSubview(titleLabel)
+        
         let safeArea = self.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
-            checkButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             checkButton.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
             checkButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            checkButton.widthAnchor.constraint(equalToConstant: 60),
+            checkButton.widthAnchor.constraint(equalToConstant: 50),
             
-            titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: checkButton.trailingAnchor, constant: 10),
             titleLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -10),
             
@@ -65,7 +67,10 @@ class TodoListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implementedrh")
     }
     
-    
+    func configureCell(todoEntry: TodoEntry) {
+        titleLabel.text = todoEntry.entryTitle
+        dateLabel.text = todoEntry.date.formatted(.dateTime.year().month().day())
+    }
     
     
 }

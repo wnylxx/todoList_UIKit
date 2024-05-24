@@ -9,6 +9,8 @@ import UIKit
 
 class TodoListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var sampleTodoEntryData = SampleTodoEntryData()
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         return tableView
@@ -16,6 +18,9 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sampleTodoEntryData.createSampleTodoEntryData()
+        
         view.backgroundColor = .white
         
         tableView.dataSource = self
@@ -45,6 +50,7 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
             tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor)
         ])
         
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -60,11 +66,14 @@ class TodoListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        sampleTodoEntryData.todoEntries.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoListTableViewCell
+        let todoEntry = sampleTodoEntryData.todoEntries[indexPath.row]
+        cell.configureCell(todoEntry: todoEntry)
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
